@@ -8,18 +8,20 @@ class ShapeRecognition(object):
         self.img = img
         self.debug_img = img
         self.contours = None
-        self.mask = None
+        self.binary_img = None
 
-    def preproces(self, lower=[0, 0, 0], upper=[15, 15, 15]):
-        self.mask = cv2.inRange(self.img, np.array(lower), np.array(upper))
+    def create_binary_img(self, lower=[0, 0, 0], upper=[15, 15, 15]):
+        self.binary_img = cv2.inRange(
+            self.img, np.array(lower), np.array(upper))
         kernel = np.ones((5, 5), np.uint8)
-        self.mask = cv2.morphologyEx(self.mask, cv2.MORPH_CLOSE, kernel)
-        self.mask = cv2.dilate(self.mask, kernel, iterations=1)
-        return self.mask
+        self.binary_img = cv2.morphologyEx(
+            self.binary_img, cv2.MORPH_CLOSE, kernel)
+        self.binary_img = cv2.dilate(self.binary_img, kernel, iterations=1)
+        return self.binary_img
 
     def find_contours(self):
         (flags, self.contours, h) = cv2.findContours(
-            self.mask,
+            self.binary_img,
             cv2.RETR_TREE,
             cv2.CHAIN_APPROX_SIMPLE
         )
@@ -43,7 +45,7 @@ class ShapeRecognition(object):
                     cv2.FONT_HERSHEY_SIMPLEX, 0.60, (255, 0, 0), 2, cv2.LINE_AA)
 
     def find_shapes(self):
-        self.preproces()
+        self.create_binary_img()
         self.find_contours()
         for n, cnt in enumerate(self.contours):
             # Number of curves in the contour
@@ -56,7 +58,6 @@ class ShapeRecognition(object):
                 p1 = approx[0]
                 p2 = approx[1]
                 p3 = approx[-1]
-                print(len(approx))
                 if len(approx) >= 3 and len(approx) <= 3:  # for a triangle
                     self.draw_debug_text(cnt, cx, cy, "Triangle")
                 if len(approx) >= 4 and len(approx) <= 4:  # for a square or rectangle
@@ -84,6 +85,6 @@ if __name__ == "__main__":
     shape_recognition.find_shapes()
 
     combined = np.vstack(
-        (shape_recognition.debug_img, cv2.cvtColor(shape_recognition.mask, cv2.COLOR_GRAY2BGR)))
+        (shape_recognition.debug_img, cv2.cvtColor(shape_recognition.binary_img, cv2.COLOR_GRAY2BGR)))
     cv2.imshow("combined", combined)
     cv2.waitKey(0)
