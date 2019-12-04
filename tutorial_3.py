@@ -10,7 +10,7 @@ class ShapeRecognition(object):
         self.contours = None
         self.mask = None
 
-    def get_binary_image(self, lower=[0, 0, 0], upper=[15, 15, 15]):
+    def preproces(self, lower=[0, 0, 0], upper=[15, 15, 15]):
         self.mask = cv2.inRange(self.img, np.array(lower), np.array(upper))
         kernel = np.ones((5, 5), np.uint8)
         self.mask = cv2.morphologyEx(self.mask, cv2.MORPH_CLOSE, kernel)
@@ -39,61 +39,42 @@ class ShapeRecognition(object):
 
     def draw_debug_text(self, contour, cx, cy, text):
         cv2.drawContours(self.debug_img, [contour], 0, (0, 0, 255), 3)
-        cv2.putText(self.debug_img, "Triangle", (cx, cy),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 1, cv2.LINE_AA)
+        cv2.putText(self.debug_img, text, (cx-35, cy+65),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.60, (255, 0, 0), 2, cv2.LINE_AA)
 
     def find_shapes(self):
-        self.get_binary_image()
+        self.preproces()
         self.find_contours()
         for n, cnt in enumerate(self.contours):
             # Number of curves in the contour
             approx = cv2.approxPolyDP(
                 cnt, 0.02*cv2.arcLength(cnt, True), True)
             M = cv2.moments(cnt)
-            #minMaxCos = returnMinMaxAngle(approx)
             if M['m00'] > 300:
                 cx = int(M['m10']/M['m00'])  # x-position of center
                 cy = int(M['m01']/M['m00'])  # y-position of center
+                p1 = approx[0]
+                p2 = approx[1]
+                p3 = approx[-1]
+                print(len(approx))
                 if len(approx) >= 3 and len(approx) <= 3:  # for a triangle
                     self.draw_debug_text(cnt, cx, cy, "Triangle")
                 if len(approx) >= 4 and len(approx) <= 4:  # for a square or rectangle
-                    p1 = approx[0]
-                    p2 = approx[1]
-                    x = len(approx)
-                    p3 = approx[x-1]
                     angle = abs(self.get_angle(p1, p2, p3))
                     if angle > 80 and angle < 100:
-                        cv2.drawContours(self.debug_img, [
-                                         cnt], 0, (0, 0, 255), 3)
-                        cv2.putText(
-                            self.debug_img, "Square", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 1, cv2.LINE_AA)
+                        self.draw_debug_text(cnt, cx, cy, "Square")
                     else:
-                        cv2.drawContours(self.debug_img, [
-                                         cnt], 0, (0, 0, 255), 3)
-                        cv2.putText(
-                            self.debug_img, "Trapezoid", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 1, cv2.LINE_AA)
+                        self.draw_debug_text(cnt, cx, cy, "Trapezoid")
 
                 if len(approx) >= 7 and len(approx) <= 7:  # for a heptagon
-                    cv2.drawContours(self.debug_img, [cnt], 0, (0, 0, 255), 3)
-                    cv2.putText(self.debug_img, "Heptagon", (cx, cy),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 1, cv2.LINE_AA)
+                    self.draw_debug_text(cnt, cx, cy, "Heptagon")
 
                 if len(approx) >= 10 and len(approx) <= 12:  # from decagon to cross
-                    p1 = approx[0]
-                    p2 = approx[1]
-                    x = len(approx)
-                    p3 = approx[x-1]
                     angle = abs(self.get_angle(p1, p2, p3))
                     if angle > 65 and angle < 75:
-                        cv2.drawContours(self.debug_img, [
-                                         cnt], 0, (0, 0, 255), 3)
-                        cv2.putText(
-                            self.debug_img, "Star", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 1, cv2.LINE_AA)
+                        self.draw_debug_text(cnt, cx, cy, "Star")
                     elif angle > 80 and angle < 100:
-                        cv2.drawContours(self.debug_img, [
-                                         cnt], 0, (0, 0, 255), 3)
-                        cv2.putText(
-                            self.debug_img, "Cross", (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 0.25, (255, 0, 0), 1, cv2.LINE_AA)
+                        self.draw_debug_text(cnt, cx, cy, "Cross")
 
 
 if __name__ == "__main__":
