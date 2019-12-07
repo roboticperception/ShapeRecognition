@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "/anaconda3/envs/shaperecognition/bin/python",
+    "python.formatting.provider": "autopep8"
+}
