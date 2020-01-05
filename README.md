@@ -3,7 +3,8 @@
 This repo goes over creating an image processing pipeline to detect and classify shapes in an image. Each part is accompanied by a YouTube video which in linked below.
 
 [Part One](https://youtu.be/ES2KBnE-Be8)
-[Part Two]()
+[Part Two](https://youtu.be/qMU3oBcs6CQ)
+[Part Three](https://youtu.be/dDkPB-dF1QA)
 
 ![alt text](shapes.jpg "Input Image")
 **Input Image**
