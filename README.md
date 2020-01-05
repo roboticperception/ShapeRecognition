@@ -2,14 +2,17 @@
 
 This repo goes over creating an image processing pipeline to detect and classify shapes in an image. Each part is accompanied by a YouTube video which in linked below.
 
-[Part One](https://youtu.be/ES2KBnE-Be8)
-[Part Two](https://youtu.be/qMU3oBcs6CQ)
-[Part Three](https://youtu.be/dDkPB-dF1QA)
+Part One
+[![Part One](https://img.youtube.com/vi/ES2KBnE-Be8/0.jpg)](https://youtu.be/ES2KBnE-Be8 "Part One")
+Part Two
+[![Part Two](https://img.youtube.com/vi/qMU3oBcs6CQ/0.jpg)](https://youtu.be/qMU3oBcs6CQ "Part Two")
+Part Three
+[![Part Three](https://img.youtube.com/vi/dDkPB-dF1QA/0.jpg)](https://youtu.be/dDkPB-dF1QA "Part Three")
 
-![alt text](shapes.jpg "Input Image")
 **Input Image**
-![alt text](images/output.png "Output Image")
+![alt text](shapes.jpg "Input Image")
 **Output Image**
+![alt text](images/output.png "Output Image")
 
 # How To Run
 
